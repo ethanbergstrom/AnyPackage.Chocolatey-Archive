@@ -1,3 +1,5 @@
+Import-Module AnyPackage
+
 Get-ChildItem .\ -Recurse -File | ForEach-Object {
 	Describe "file $($_) should not produce any PSScriptAnalyzer warnings" {
 		Invoke-ScriptAnalyzer -Path $_.FullName | ForEach-Object {
