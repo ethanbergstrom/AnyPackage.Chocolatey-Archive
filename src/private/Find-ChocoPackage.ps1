@@ -43,24 +43,24 @@ function Find-ChocoPackage {
 		Source = $selectedSource
 	}
 
-    if (-Not [WildcardPattern]::ContainsWildcardCharacters($Request.Name)) {
+	if (-Not [WildcardPattern]::ContainsWildcardCharacters($Request.Name)) {
 		# Limit NuGet result set to just the specific package name unless it contains a wildcard
 		$chocoParams.Add('Exact',$true)
 	}
-    
-    # Choco does not support searching by min or max version, so if a user is picky we'll need to pull back all versions and filter ourselves
-    if ($Request.Version) {
-        $chocoParams.Add('AllVersions',$true)
-    }
+
+	# Choco does not support searching by min or max version, so if a user is picky we'll need to pull back all versions and filter ourselves
+	if ($Request.Version) {
+		$chocoParams.Add('AllVersions',$true)
+	}
 
 	Foil\Get-ChocoPackage @chocoParams |
-        Where-Object {$Request.IsMatch($_.Name)} |
-            Where-Object {-Not $Request.Version -Or (([NuGet.Versioning.VersionRange]$Request.Version).Satisfies($_.Version))} | Group-Object Name |
-                Select-Object Name,@{
-                        Name = 'Version'
-                        Expression = {$_.Group | Sort-Object -Descending Version | Select-Object -First 1 -ExpandProperty Version}
-                    },@{
-                        Name = 'Source'
-                        Expression = {$selectedSource}
-                    } 
+		Where-Object {$Request.IsMatch($_.Name)} |
+			Where-Object {-Not $Request.Version -Or (([NuGet.Versioning.VersionRange]$Request.Version).Satisfies($_.Version))} | Group-Object Name |
+				Select-Object Name,@{
+						Name = 'Version'
+						Expression = {$_.Group | Sort-Object -Descending Version | Select-Object -First 1 -ExpandProperty Version}
+					},@{
+						Name = 'Source'
+						Expression = {$selectedSource}
+					}
 }
