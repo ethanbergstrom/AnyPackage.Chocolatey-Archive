@@ -173,10 +173,10 @@ Describe 'multi-source support' {
 	}
 
 	It 'refuses to register a source with no location' {
-		Register-PackageSource -Name $altSource -ErrorAction SilentlyContinue | Where-Object {$_.Name -eq $altSource} | Should -BeNullOrEmpty
+		Register-PackageSource -Name $altSource -ErrorAction SilentlyContinue -Provider Chocolatey | Where-Object {$_.Name -eq $altSource} | Should -BeNullOrEmpty
 	}
-	It 'registers an alternative package source' {
-		Register-PackageSource -Name $altSource -Location $altLocation | Where-Object {$_.Name -eq $altSource} | Should -Not -BeNullOrEmpty
+		It 'registers an alternative package source' {
+		Register-PackageSource -Name $altSource -Location $altLocation -Provider Chocolatey | Where-Object {$_.Name -eq $altSource} | Should -Not -BeNullOrEmpty
 	}
 	It 'searches for and installs the latest version of a package from an alternate source' {
 		Find-Package -Name $package -source $altSource | Install-Package -Force | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
