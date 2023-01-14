@@ -16,7 +16,7 @@ Describe 'basic package search operations' {
 			Get-Package | Where-Object {$_.Name -contains 'chocolatey'} | Should -Not -BeNullOrEmpty
 		}
 		It 'searches for the latest version of a package' {
-			Find-Package -Name $package | Where-Object {$_.Name -contains $package}  | Should -Not -BeNullOrEmpty
+			Find-Package -Name $package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 		}
 		It 'searches for all versions of a package' {
 			Find-Package -Name $package -Version $([NuGet.Versioning.VersionRange]'[0,]') | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
@@ -49,7 +49,7 @@ Describe 'DSC-compliant package installation and uninstallation' {
 			Find-Package -Name $package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 		}
 		It 'silently installs the latest version of a package' {
-			Install-Package -Name $package -Force | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+			Install-Package -Name $package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 		}
 		It 'finds the locally installed package just installed' {
 			Get-Package -Name $package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
@@ -70,7 +70,7 @@ Describe 'DSC-compliant package installation and uninstallation' {
 	# 		Find-Package -Name $package -AdditionalArguments $params | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 	# 	}
 	# 	It 'silently installs the latest version of a package' {
-	# 		Install-Package -Force -Name $package -AdditionalArguments $params | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+	# 		Install-Package -Name $package -AdditionalArguments $params | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 	# 	}
 	# 	It 'correctly passed parameters to the package' {
 	# 		Get-ChildItem -Path $installDir -ErrorAction SilentlyContinue | Should -Not -BeNullOrEmpty
@@ -92,7 +92,7 @@ Describe 'DSC-compliant package installation and uninstallation' {
 # 			Remove-Item -Force -Recurse -Path $installDir -ErrorAction SilentlyContinue
 # 		}
 # 		It 'silently installs the latest version of a package with explicit parameters' {
-# 			Install-Package -Force -Name $package -PackageParameters $packageParams | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+# 			Install-Package -Name $package -PackageParameters $packageParams | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 # 		}
 # 		It 'correctly passed explicit parameters to the package' {
 # 			$kittyIniPath | Should -Exist
@@ -102,7 +102,7 @@ Describe 'DSC-compliant package installation and uninstallation' {
 # 			Uninstall-Package -Name $package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 # 		}
 # 		It 'silently installs the latest version of a package with explicit and wrapped parameters' {
-# 			Install-Package -Force -Name $package -PackageParameters $packageParams -AdditionalArguments $wrappedParams | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+# 			Install-Package -Name $package -PackageParameters $packageParams -AdditionalArguments $wrappedParams | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 # 		}
 # 		It 'correctly passed wrapped parameters to the package' {
 # 			$kittyIniPath | Should -Not -Exist
@@ -120,7 +120,7 @@ Describe 'pipeline-based package installation and uninstallation' {
 		}
 
 		It 'searches for and silently installs the latest version of a package' {
-			Find-Package -Name $package | Install-Package -Force | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+			Find-Package -Name $package | Install-Package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 		}
 		It 'finds and silently uninstalls the locally installed package just installed' {
 			Get-Package -Name $package | Uninstall-Package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
@@ -132,7 +132,7 @@ Describe 'pipeline-based package installation and uninstallation' {
 	# 	}
 
 	# 	It 'searches for and silently installs the latest version of a package' {
-	# 		Find-Package -Name $package | Install-Package -Force | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+	# 		Find-Package -Name $package | Install-Package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 	# 	}
 	# 	It 'finds and silently uninstalls the locally installed package just installed, along with its dependencies' {
 	# 		Get-Package -Name $package | Uninstall-Package -RemoveDependencies | Should -HaveCount 3
@@ -147,7 +147,7 @@ Describe 'pipeline-based package installation and uninstallation' {
 	# 	}
 
 	# 	It 'searches for and silently installs the latest version of a package' {
-	# 		Find-Package -Name $package | Install-Package -Force -AdditionalArguments $params | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+	# 		Find-Package -Name $package | Install-Package -AdditionalArguments $params | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 	# 	}
 	# 	It 'correctly passed parameters to the package' {
 	# 		Get-ChildItem -Path $installDir -ErrorAction SilentlyContinue | Should -Not -BeNullOrEmpty
@@ -179,7 +179,7 @@ Describe 'multi-source support' {
 		Register-PackageSource -Name $altSource -Location $altLocation -Provider Chocolatey | Where-Object {$_.Name -eq $altSource} | Should -Not -BeNullOrEmpty
 	}
 	It 'searches for and installs the latest version of a package from an alternate source' {
-		Find-Package -Name $package -source $altSource | Install-Package -Force | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+		Find-Package -Name $package -source $altSource | Install-Package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 	}
 	It 'finds and uninstalls a package installed from an alternate source' {
 		Get-Package -Name $package | Uninstall-Package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
@@ -202,28 +202,28 @@ Describe 'version filters' {
 
 	Context 'required version' {
 		It 'searches for and silently installs a specific package version' {
-			Find-Package -Name $package -Version "[$version]" | Install-Package -Force | Where-Object {$_.Name -contains $package -And $_.Version -eq $version} | Should -Not -BeNullOrEmpty
+			Find-Package -Name $package -Version "[$version]" | Install-Package | Where-Object {$_.Name -contains $package -And $_.Version -eq $version} | Should -Not -BeNullOrEmpty
 		}
 		It 'finds and silently uninstalls a specific package version' {
-			Get-Package -Name $package -Version "[$version]" | UnInstall-Package -Force | Where-Object {$_.Name -contains $package -And $_.Version -eq $version} | Should -Not -BeNullOrEmpty
+			Get-Package -Name $package -Version "[$version]" | UnInstall-Package | Where-Object {$_.Name -contains $package -And $_.Version -eq $version} | Should -Not -BeNullOrEmpty
 		}
 	}
 
 	Context 'minimum version' {
 		It 'searches for and silently installs a minimum package version' {
-			Find-Package -Name $package -Version $version | Install-Package -Force | Where-Object {$_.Name -contains $package -And $_.Version -ge $version} | Should -Not -BeNullOrEmpty
+			Find-Package -Name $package -Version $version | Install-Package | Where-Object {$_.Name -contains $package -And $_.Version -ge $version} | Should -Not -BeNullOrEmpty
 		}
 		It 'finds and silently uninstalls a minimum package version' {
-			Get-Package -Name $package -Version $version | UnInstall-Package -Force | Where-Object {$_.Name -contains $package -And $_.Version -ge $version} | Should -Not -BeNullOrEmpty
+			Get-Package -Name $package -Version $version | UnInstall-Package | Where-Object {$_.Name -contains $package -And $_.Version -ge $version} | Should -Not -BeNullOrEmpty
 		}
 	}
 
 	Context 'maximum version' {
 		It 'searches for and silently installs a maximum package version' {
-			Find-Package -Name $package -MaximumVersion "[,$version]" | Install-Package -Force | Where-Object {$_.Name -contains $package -And $_.Version -le $version} | Should -Not -BeNullOrEmpty
+			Find-Package -Name $package -MaximumVersion "[,$version]" | Install-Package | Where-Object {$_.Name -contains $package -And $_.Version -le $version} | Should -Not -BeNullOrEmpty
 		}
 		It 'finds and silently uninstalls a maximum package version' {
-			Get-Package -Name $package -MaximumVersion "[,$version]" | UnInstall-Package -Force | Where-Object {$_.Name -contains $package -And $_.Version -le $version} | Should -Not -BeNullOrEmpty
+			Get-Package -Name $package -MaximumVersion "[,$version]" | UnInstall-Package | Where-Object {$_.Name -contains $package -And $_.Version -le $version} | Should -Not -BeNullOrEmpty
 		}
 	}
 
@@ -233,10 +233,10 @@ Describe 'version filters' {
 	# 		Get-Package -Name $package -RequiredVersion 'latest' -ErrorAction SilentlyContinue | Where-Object {$_.Name -contains $package} | Should -BeNullOrEmpty
 	# 	}
 	# 	It 'searches for and silently installs the latest package version' {
-	# 		Find-Package -Name $package -RequiredVersion 'latest' | Install-Package -Force | Where-Object {$_.Name -contains $package -And $_.Version -gt $version} | Should -Not -BeNullOrEmpty
+	# 		Find-Package -Name $package -RequiredVersion 'latest' | Install-Package | Where-Object {$_.Name -contains $package -And $_.Version -gt $version} | Should -Not -BeNullOrEmpty
 	# 	}
 	# 	It 'finds and silently uninstalls a specific package version' {
-	# 		Get-Package -Name $package -RequiredVersion 'latest' | UnInstall-Package -Force | Where-Object {$_.Name -contains $package -And $_.Version -gt $version} | Should -Not -BeNullOrEmpty
+	# 		Get-Package -Name $package -RequiredVersion 'latest' | UnInstall-Package | Where-Object {$_.Name -contains $package -And $_.Version -gt $version} | Should -Not -BeNullOrEmpty
 	# 	}
 	# }
 }
@@ -253,7 +253,7 @@ Describe "error handling on Chocolatey failures" {
 		}
 
 		It 'fails to silently install a package that cannot be installed' {
-			{Install-Package -Name $package -Version "[$version]" -Force -ErrorAction Stop -WarningAction SilentlyContinue} | Should -Throw
+			{Install-Package -Name $package -Version "[$version]" -ErrorAction Stop -WarningAction SilentlyContinue} | Should -Throw
 		}
 	}
 	Context 'package uninstallation' {
@@ -261,11 +261,11 @@ Describe "error handling on Chocolatey failures" {
 			$package = 'chromium'
 			# This version is known to be broken, per https://github.com/chocolatey-community/chocolatey-coreteampackages/issues/341
 			$version = '56.0.2897.0'
-			Install-Package -Name $package -Version "[$version]" -Force
+			Install-Package -Name $package -Version "[$version]"
 		}
 
 		It 'fails to silently uninstall a package that cannot be uninstalled' {
-			{Uninstall-Package -Name $package -Force -ErrorAction Stop -WarningAction SilentlyContinue} | Should -Throw
+			{Uninstall-Package -Name $package -ErrorAction Stop -WarningAction SilentlyContinue} | Should -Throw
 		}
 	}
 }
