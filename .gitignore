@@ -1,0 +1,4 @@
+testResults.xml
+*.dll
+.paket/*
+packages/*
