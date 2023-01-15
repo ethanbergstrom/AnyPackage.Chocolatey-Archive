@@ -46,6 +46,9 @@ jobs:
               Enabled = $true
               OutputFormat = 'JUnitXML'
             }
+            Output = @{
+              Verbosity = 'Detailed'
+            }
           })
       - name: Upload Pester test results
         if: always()
