@@ -53,6 +53,10 @@ function Find-ChocoPackage {
 		$chocoParams.Add('AllVersions',$true)
 	}
 
+	# Filter results by any name and version requirements
+	# We apply additional package name filtering when using wildcards to make Chocolatey's wildcard behavior more PowerShell-esque
+	# The final results must be grouped by package name, showing the highest available version for install, to make the results easier to consume
+	# Choco does not include source information in it's result set, so we need to include it in the results as a calculated property
 	Foil\Get-ChocoPackage @chocoParams |
 		Where-Object {$Request.IsMatch($_.Name)} |
 			Where-Object {-Not $Request.Version -Or (([NuGet.Versioning.VersionRange]$Request.Version).Satisfies($_.Version))} | Group-Object Name |

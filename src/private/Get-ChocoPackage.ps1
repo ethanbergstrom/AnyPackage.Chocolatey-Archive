@@ -16,7 +16,7 @@ function Get-ChocoPackage {
 		$chocoParams.Add('Name',$Request.Name)
 	}
 
-	# Convert the PSCustomObject output from Foil into AnyPackage PackageInfo objects, then filter results by any name and version requirements
+	# Filter results by any name and version requirements
 	# We apply additional package name filtering when using wildcards to make Chocolatey's wildcard behavior more PowerShell-esque
 	Foil\Get-ChocoPackage @chocoParams |
 		Where-Object {-Not $Request.Name -Or ($Request.IsMatch($_.Name))} |

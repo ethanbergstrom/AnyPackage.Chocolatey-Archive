@@ -14,17 +14,20 @@ class ChocolateyProvider : PackageProvider, IGetSource, ISetSource, IGetPackage,
 	ChocolateyProvider() : base('070f2b8f-c7db-4566-9296-2f7cc9146bf0') { }
 
 	[void] GetSource([SourceRequest] $Request) {
-		# $Request.WriteVerbose('Filter is '+$Request.Name)
-		Foil\Get-ChocoSource | Where-Object {$_.Disabled -eq 'False'} | Where-Object {$_.Name -Like $Request.Name} | Write-Source
+		Foil\Get-ChocoSource | Where-Object {$_.Disabled -eq 'False'} | Where-Object {$_.Name -Like $Request.Name} | ForEach-Object {
+			$Request.WriteSource($_.Name, $_.Location, $true)
+		}
 	}
 
 	[void] RegisterSource([SourceRequest] $Request) {
 		Foil\Register-ChocoSource -Name $Request.Name -Location $Request.Location
+		# Choco doesn't return anything after source operations, so we make up our own output object
 		$Request.WriteSource($Request.Name, $Request.Location.TrimEnd("\"), $Request.Trusted)
 	}
 
 	[void] UnregisterSource([SourceRequest] $Request) {
 		Foil\Unregister-ChocoSource -Name $Request.Name
+		# Choco doesn't return anything after source operations, so we make up our own output object
 		$Request.WriteSource($Request.Name, '')
 	}
 
@@ -41,10 +44,12 @@ class ChocolateyProvider : PackageProvider, IGetSource, ISetSource, IGetPackage,
 	}
 
 	[void] InstallPackage([PackageRequest] $Request) {
+		# Run the package request first through Find-ChocoPackage to determine which source to use, and filter by any version requirements
 		Find-ChocoPackage | Foil\Install-ChocoPackage | Write-Package
 	}
 
 	[void] UninstallPackage([PackageRequest] $Request) {
+		# Run the package request first through Get-ChocoPackage to filter by any version requirements
 		Get-ChocoPackage | Foil\Uninstall-ChocoPackage | Write-Package
 	}
 }
