@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Bundle up module
         uses: actions/upload-artifact@v3
         with:
@@ -26,7 +26,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Download module
         uses: actions/download-artifact@v3
         with:
@@ -70,7 +70,7 @@ jobs:
           name: test-results
           path: test-results
       - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
           files: test-results/**/*.xml
   Publish:
