@@ -63,6 +63,9 @@ jobs:
     needs: Test
     if: success() || failure()
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
     steps:
       - name: Download Test Results
         uses: actions/download-artifact@v3
