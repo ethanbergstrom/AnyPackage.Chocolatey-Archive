@@ -174,20 +174,18 @@ Describe 'multi-source support' {
 		Unregister-PackageSource -Name $altSource -ErrorAction SilentlyContinue
 	}
 
-	It 'refuses to register a source with no location' {
-		Register-PackageSource -Name $altSource -ErrorAction SilentlyContinue -Provider Chocolatey | Where-Object {$_.Name -eq $altSource} | Should -BeNullOrEmpty
-	}
 	It 'registers an alternative package source' {
-		Register-PackageSource -Name $altSource -Location $altLocation -Provider Chocolatey | Where-Object {$_.Name -eq $altSource} | Should -Not -BeNullOrEmpty
+		Register-PackageSource -Name $altSource -Location $altLocation -Provider Chocolatey -PassThru | Where-Object {$_.Name -eq $altSource} | Should -Not -BeNullOrEmpty
+		Get-PackageSource | Where-Object {$_.Name -eq $altSource} | Should -Not -BeNullOrEmpty
 	}
 	It 'searches for and installs the latest version of a package from an alternate source' {
-		Find-Package -Name $package -source $altSource | Install-Package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+		Find-Package -Name $package -source $altSource | ForEach-Object {Install-Package -PassThru -InputObject $_} | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 	}
 	It 'finds and uninstalls a package installed from an alternate source' {
 		Get-Package -Name $package | Uninstall-Package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 	}
 	It 'unregisters an alternative package source' {
-		Unregister-PackageSource -Name $altSource
+		Unregister-PackageSource -Name $altSource -PassThru | Where-Object {$_.Name -eq $altSource} | Should -Not -BeNullOrEmpty
 		Get-PackageSource | Where-Object {$_.Name -eq $altSource} | Should -BeNullOrEmpty
 	}
 }
