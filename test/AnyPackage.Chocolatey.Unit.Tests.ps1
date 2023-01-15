@@ -1,4 +1,5 @@
 ﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='PSSA does not understand Pester scopes well')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseCmdletCorrectly', '', Justification='PSSA does not like explicitly using InputObject')]
 param()
 
 BeforeAll {
@@ -120,7 +121,7 @@ Describe 'pipeline-based package installation and uninstallation' {
 		}
 
 		It 'searches for and silently installs the latest version of a package' {
-			Find-Package -Name $package | %{Install-Package -PassThru -InputObject $_} | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+			Find-Package -Name $package | ForEach-Object {Install-Package -PassThru -InputObject $_} | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 		}
 		It 'finds and silently uninstalls the locally installed package just installed' {
 			Get-Package -Name $package | Uninstall-Package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
@@ -202,7 +203,7 @@ Describe 'version filters' {
 
 	Context 'required version' {
 		It 'searches for and silently installs a specific package version' {
-			Find-Package -Name $package -Version $([NuGet.Versioning.VersionRange]"[$version]") | %{Install-Package -PassThru -InputObject $_} | Where-Object {$_.Name -contains $package -And $_.Version -eq $version} | Should -Not -BeNullOrEmpty
+			Find-Package -Name $package -Version $([NuGet.Versioning.VersionRange]"[$version]") | ForEach-Object {Install-Package -PassThru -InputObject $_} | Where-Object {$_.Name -contains $package -And $_.Version -eq $version} | Should -Not -BeNullOrEmpty
 		}
 		It 'finds and silently uninstalls a specific package version' {
 			Get-Package -Name $package -Version "[$version]" | UnInstall-Package -PassThru | Where-Object {$_.Name -contains $package -And $_.Version -eq $version} | Should -Not -BeNullOrEmpty
@@ -211,7 +212,7 @@ Describe 'version filters' {
 
 	Context 'minimum version' {
 		It 'searches for and silently installs a minimum package version' {
-			Find-Package -Name $package -Version $version | %{Install-Package -PassThru -InputObject $_} | Where-Object {$_.Name -contains $package -And $_.Version -ge $version} | Should -Not -BeNullOrEmpty
+			Find-Package -Name $package -Version $version | ForEach-Object {Install-Package -PassThru -InputObject $_} | Where-Object {$_.Name -contains $package -And $_.Version -ge $version} | Should -Not -BeNullOrEmpty
 		}
 		It 'finds and silently uninstalls a minimum package version' {
 			Get-Package -Name $package -Version $version | UnInstall-Package -PassThru | Where-Object {$_.Name -contains $package -And $_.Version -ge $version} | Should -Not -BeNullOrEmpty
@@ -220,7 +221,7 @@ Describe 'version filters' {
 
 	Context 'maximum version' {
 		It 'searches for and silently installs a maximum package version' {
-			Find-Package -Name $package -Version $([NuGet.Versioning.VersionRange]"[,$version]") | %{Install-Package -PassThru -InputObject $_} | Where-Object {$_.Name -contains $package -And $_.Version -le $version} | Should -Not -BeNullOrEmpty
+			Find-Package -Name $package -Version $([NuGet.Versioning.VersionRange]"[,$version]") | ForEach-Object {Install-Package -PassThru -InputObject $_} | Where-Object {$_.Name -contains $package -And $_.Version -le $version} | Should -Not -BeNullOrEmpty
 		}
 		It 'finds and silently uninstalls a maximum package version' {
 			Get-Package -Name $package -Version $([NuGet.Versioning.VersionRange]"[,$version]") | UnInstall-Package -PassThru | Where-Object {$_.Name -contains $package -And $_.Version -le $version} | Should -Not -BeNullOrEmpty
