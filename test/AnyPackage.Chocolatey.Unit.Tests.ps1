@@ -166,6 +166,7 @@ Describe 'multi-source support' {
 		$package = 'cpu-z'
 
 		PackageManagement\Save-Package $package -Source 'http://chocolatey.org/api/v2' -Path $altLocation
+		Remove-Module PackageManagement
 		Unregister-PackageSource -Name $altSource -ErrorAction SilentlyContinue
 	}
 	AfterAll {
