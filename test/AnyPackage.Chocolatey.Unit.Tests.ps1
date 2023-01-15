@@ -159,37 +159,37 @@ Describe 'pipeline-based package installation and uninstallation' {
 	# }
 }
 
-# Describe 'multi-source support' {
-# 	BeforeAll {
-# 		$altSource = 'LocalChocoSource'
-# 		$altLocation = $PSScriptRoot
-# 		$package = 'cpu-z'
+Describe 'multi-source support' {
+	BeforeAll {
+		$altSource = 'LocalChocoSource'
+		$altLocation = $PSScriptRoot
+		$package = 'cpu-z'
 
-# 		PackageManagement\Save-Package $package -Source 'http://chocolatey.org/api/v2' -Path $altLocation
-# 		Unregister-PackageSource -Name $altSource -ErrorAction SilentlyContinue
-# 	}
-# 	AfterAll {
-# 		Remove-Item "$altLocation\*.nupkg" -Force -ErrorAction SilentlyContinue
-# 		Unregister-PackageSource -Name $altSource -ErrorAction SilentlyContinue
-# 	}
+		PackageManagement\Save-Package $package -Source 'http://chocolatey.org/api/v2' -Path $altLocation
+		Unregister-PackageSource -Name $altSource -ErrorAction SilentlyContinue
+	}
+	AfterAll {
+		Remove-Item "$altLocation\*.nupkg" -Force -ErrorAction SilentlyContinue
+		Unregister-PackageSource -Name $altSource -ErrorAction SilentlyContinue
+	}
 
-# 	It 'refuses to register a source with no location' {
-# 		Register-PackageSource -Name $altSource -ErrorAction SilentlyContinue -Provider Chocolatey | Where-Object {$_.Name -eq $altSource} | Should -BeNullOrEmpty
-# 	}
-# 	It 'registers an alternative package source' {
-# 		Register-PackageSource -Name $altSource -Location $altLocation -Provider Chocolatey | Where-Object {$_.Name -eq $altSource} | Should -Not -BeNullOrEmpty
-# 	}
-# 	It 'searches for and installs the latest version of a package from an alternate source' {
-# 		Find-Package -Name $package -source $altSource | Install-Package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-# 	}
-# 	It 'finds and uninstalls a package installed from an alternate source' {
-# 		Get-Package -Name $package | Uninstall-Package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-# 	}
-# 	It 'unregisters an alternative package source' {
-# 		Unregister-PackageSource -Name $altSource
-# 		Get-PackageSource | Where-Object {$_.Name -eq $altSource} | Should -BeNullOrEmpty
-# 	}
-# }
+	It 'refuses to register a source with no location' {
+		Register-PackageSource -Name $altSource -ErrorAction SilentlyContinue -Provider Chocolatey | Where-Object {$_.Name -eq $altSource} | Should -BeNullOrEmpty
+	}
+	It 'registers an alternative package source' {
+		Register-PackageSource -Name $altSource -Location $altLocation -Provider Chocolatey | Where-Object {$_.Name -eq $altSource} | Should -Not -BeNullOrEmpty
+	}
+	It 'searches for and installs the latest version of a package from an alternate source' {
+		Find-Package -Name $package -source $altSource | Install-Package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+	}
+	It 'finds and uninstalls a package installed from an alternate source' {
+		Get-Package -Name $package | Uninstall-Package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+	}
+	It 'unregisters an alternative package source' {
+		Unregister-PackageSource -Name $altSource
+		Get-PackageSource | Where-Object {$_.Name -eq $altSource} | Should -BeNullOrEmpty
+	}
+}
 
 Describe 'version filters' {
 	BeforeAll {
