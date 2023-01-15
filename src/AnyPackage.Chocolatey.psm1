@@ -8,10 +8,22 @@ using namespace AnyPackage.Provider
 Get-ChildItem $ScriptPath/private -Recurse -Filter '*.ps1' -File | ForEach-Object {
 	. $_.FullName
 }
+class UninstallPackageDynamicParameters {
+	[Parameter()]
+	[bool]
+	$RemoveDependencies = $false
+}
 
 [PackageProvider("Chocolatey")]
 class ChocolateyProvider : PackageProvider, IGetSource, ISetSource, IGetPackage, IFindPackage, IInstallPackage, IUninstallPackage {
 	ChocolateyProvider() : base('070f2b8f-c7db-4566-9296-2f7cc9146bf0') { }
+
+	[object] GetDynamicParameters([string] $commandName) {
+		return $(switch ($commandName) {
+			'Uninstall-Package' {[UninstallPackageDynamicParameters]::new()}
+			Default {$null}
+		})
+	}
 
 	[void] GetSource([SourceRequest] $Request) {
 		Foil\Get-ChocoSource | Where-Object {$_.Disabled -eq 'False'} | Where-Object {$_.Name -Like $Request.Name} | ForEach-Object {
