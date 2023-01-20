@@ -136,7 +136,7 @@ Describe 'pipeline-based package installation and uninstallation' {
 			Find-Package -Name $package | ForEach-Object {Install-Package -PassThru -InputObject $_} | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 		}
 		It 'finds and silently uninstalls the locally installed package just installed, along with its dependencies' {
-			Get-Package -Name $package | Uninstall-Package -RemoveDependencies -PassThru | Should -HaveCount 3
+			Get-Package -Name $package | Uninstall-Package -Provider Chocolatey -RemoveDependencies -PassThru | Should -HaveCount 3
 		}
 	}
 	# Context 'with additional parameters' {
