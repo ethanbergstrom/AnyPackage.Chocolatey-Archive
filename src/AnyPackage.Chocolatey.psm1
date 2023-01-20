@@ -62,8 +62,12 @@ class ChocolateyProvider : PackageProvider, IGetSource, ISetSource, IGetPackage,
 	}
 
 	[void] UninstallPackage([PackageRequest] $Request) {
+		$chocoParams = @{
+			RemoveDependencies = $Request.DynamicParameters.RemoveDependencies
+		}
+
 		# Run the package request first through Get-ChocoPackage to filter by any version requirements
-		Get-ChocoPackage | Foil\Uninstall-ChocoPackage | Write-Package
+		Get-ChocoPackage | Foil\Uninstall-ChocoPackage @chocoParams | Write-Package
 	}
 }
 
