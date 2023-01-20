@@ -64,7 +64,7 @@ Describe 'pipeline-based package installation and uninstallation' {
 		}
 
 		It 'silently installs the latest version of a package with explicit parameters' {
-			Find-Package -Name $package | ForEach-Object {Install-Package -InputObject $_ -Provider Chocolatey -ParamsGlobal -Parameters $parameters} | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+			Install-Package -Name $package -Provider Chocolatey -ParamsGlobal -Parameters $parameters -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 		}
 		It 'correctly passed parameters to the package' {
 			Get-ChildItem -Path $installDir -ErrorAction SilentlyContinue | Should -Not -BeNullOrEmpty
