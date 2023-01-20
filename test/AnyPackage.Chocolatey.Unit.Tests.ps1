@@ -127,18 +127,18 @@ Describe 'pipeline-based package installation and uninstallation' {
 			Get-Package -Name $package | Uninstall-Package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 		}
 	}
-	# Context 'with dependencies' {
-	# 	BeforeAll {
-	# 		$package = 'keepass-plugin-winhello'
-	# 	}
+	Context 'with dependencies' {
+		BeforeAll {
+			$package = 'keepass-plugin-winhello'
+		}
 
-	# 	It 'searches for and silently installs the latest version of a package' {
-	# 		Find-Package -Name $package | Install-Package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-	# 	}
-	# 	It 'finds and silently uninstalls the locally installed package just installed, along with its dependencies' {
-	# 		Get-Package -Name $package | Uninstall-Package -RemoveDependencies | Should -HaveCount 3
-	# 	}
-	# }
+		It 'searches for and silently installs the latest version of a package' {
+			Find-Package -Name $package | ForEach-Object {Install-Package -PassThru -InputObject $_} | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+		}
+		It 'finds and silently uninstalls the locally installed package just installed, along with its dependencies' {
+			Get-Package -Name $package | Uninstall-Package -Provider Chocolatey -RemoveDependencies -PassThru | Should -HaveCount 3
+		}
+	}
 	# Context 'with additional parameters' {
 	# 	BeforeAll {
 	# 		$package = 'sysinternals'

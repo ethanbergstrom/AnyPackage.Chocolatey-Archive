@@ -9,9 +9,22 @@ Get-ChildItem $ScriptPath/private -Recurse -Filter '*.ps1' -File | ForEach-Objec
 	. $_.FullName
 }
 
+class UninstallPackageDynamicParameters {
+	[Parameter()]
+	[switch]
+	$RemoveDependencies = $false
+}
+
 [PackageProvider("Chocolatey")]
 class ChocolateyProvider : PackageProvider, IGetSource, ISetSource, IGetPackage, IFindPackage, IInstallPackage, IUninstallPackage {
 	ChocolateyProvider() : base('070f2b8f-c7db-4566-9296-2f7cc9146bf0') { }
+
+	[object] GetDynamicParameters([string] $commandName) {
+		return $(switch ($commandName) {
+			'Uninstall-Package' {[UninstallPackageDynamicParameters]::new()}
+			Default {$null}
+		})
+	}
 
 	[void] GetSource([SourceRequest] $Request) {
 		Foil\Get-ChocoSource | Where-Object {$_.Disabled -eq 'False'} | Where-Object {$_.Name -Like $Request.Name} | ForEach-Object {
@@ -49,8 +62,12 @@ class ChocolateyProvider : PackageProvider, IGetSource, ISetSource, IGetPackage,
 	}
 
 	[void] UninstallPackage([PackageRequest] $Request) {
+		$chocoParams = @{
+			RemoveDependencies = $Request.DynamicParameters.RemoveDependencies
+		}
+
 		# Run the package request first through Get-ChocoPackage to filter by any version requirements
-		Get-ChocoPackage | Foil\Uninstall-ChocoPackage | Write-Package
+		Get-ChocoPackage | Foil\Uninstall-ChocoPackage @chocoParams | Write-Package
 	}
 }
 
