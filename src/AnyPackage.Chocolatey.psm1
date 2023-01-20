@@ -74,7 +74,7 @@ class ChocolateyProvider : PackageProvider, IGetSource, ISetSource, IGetPackage,
 		}
 
 		# Run the package request first through Find-ChocoPackage to determine which source to use, and filter by any version requirements
-		Find-ChocoPackage | Foil\Install-ChocoPackage | Write-Package
+		Find-ChocoPackage | Foil\Install-ChocoPackage @chocoParams | Write-Package
 	}
 
 	[void] UninstallPackage([PackageRequest] $Request) {
