@@ -26,93 +26,7 @@ Describe 'basic package search operations' {
 			Find-Package -Name "$package*" | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 		}
 	}
-	# Context 'with additional arguments' {
-	# 	BeforeAll {
-	# 		$package = 'sysinternals'
-	# 		$installDir = Join-Path -Path $env:ProgramFiles -ChildPath $package
-	# 		$params = "--paramsglobal --params ""/InstallDir:$installDir /QuickLaunchShortcut:false"""
-	# 		Remove-Item -Force -Recurse -Path $installDir -ErrorAction SilentlyContinue
-	# 	}
-
-	# 	It 'searches for the exact package name' {
-	# 		Find-Package -Name $package -AdditionalArguments $params | Should -Not -BeNullOrEmpty
-	# 	}
-	# }
 }
-
-Describe 'DSC-compliant package installation and uninstallation' {
-	Context 'without additional arguments' {
-		BeforeAll {
-			$package = 'cpu-z'
-		}
-
-		It 'searches for the latest version of a package' {
-			Find-Package -Name $package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-		}
-		It 'silently installs the latest version of a package' {
-			Install-Package -Name $package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-		}
-		It 'finds the locally installed package just installed' {
-			Get-Package -Name $package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-		}
-		It 'silently uninstalls the locally installed package just installed' {
-			Uninstall-Package -Name $package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-		}
-	}
-	# Context 'with additional parameters' {
-	# 	BeforeAll {
-	# 		$package = 'sysinternals'
-	# 		$installDir = Join-Path -Path $env:ProgramFiles -ChildPath $package
-	# 		$params = "--paramsglobal --params ""/InstallDir:$installDir /QuickLaunchShortcut:false"""
-	# 		Remove-Item -Force -Recurse -Path $installDir -ErrorAction SilentlyContinue
-	# 	}
-
-	# 	It 'searches for the latest version of a package' {
-	# 		Find-Package -Name $package -AdditionalArguments $params | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-	# 	}
-	# 	It 'silently installs the latest version of a package' {
-	# 		Install-Package -Name $package -AdditionalArguments $params | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-	# 	}
-	# 	It 'correctly passed parameters to the package' {
-	# 		Get-ChildItem -Path $installDir -ErrorAction SilentlyContinue | Should -Not -BeNullOrEmpty
-	# 	}
-	# 	It 'finds the locally installed package just installed' {
-	# 		Get-Package -Name $package -AdditionalArguments $params | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-	# 	}
-	# 	It 'silently uninstalls the locally installed package just installed' {
-	# 		Uninstall-Package -Name $package -AdditionalArguments $params | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-	# 	}
-	}
-# 	Context 'with package parameters passed explicitly' {
-# 		BeforeAll {
-# 			$package = 'kitty'
-# 			$installDir = Join-Path -Path $env:ChocolateyInstall -ChildPath (Join-Path -Path 'lib' -ChildPath $package)
-# 			$kittyIniPath = Join-Path -Path $installDir -ChildPath (Join-Path -Path 'tools' -ChildPath 'kitty.ini')
-# 			$packageParams = "/Portable"
-# 			$wrappedParams = "--params ""/Dummy"""
-# 			Remove-Item -Force -Recurse -Path $installDir -ErrorAction SilentlyContinue
-# 		}
-# 		It 'silently installs the latest version of a package with explicit parameters' {
-# 			Install-Package -Name $package -PackageParameters $packageParams | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-# 		}
-# 		It 'correctly passed explicit parameters to the package' {
-# 			$kittyIniPath | Should -Exist
-# 			$kittyIniPath | Should -FileContentMatch 'savemode=dir'
-# 		}
-# 		It 'silently uninstalls the locally installed package just installed' {
-# 			Uninstall-Package -Name $package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-# 		}
-# 		It 'silently installs the latest version of a package with explicit and wrapped parameters' {
-# 			Install-Package -Name $package -PackageParameters $packageParams -AdditionalArguments $wrappedParams | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-# 		}
-# 		It 'correctly passed wrapped parameters to the package' {
-# 			$kittyIniPath | Should -Not -Exist
-# 		}
-# 		It 'silently uninstalls the locally installed package just installed again' {
-# 			Uninstall-Package -Name $package | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-# 		}
-# 	}
-# }
 
 Describe 'pipeline-based package installation and uninstallation' {
 	Context 'without additional arguments' {
@@ -127,6 +41,7 @@ Describe 'pipeline-based package installation and uninstallation' {
 			Get-Package -Name $package | Uninstall-Package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 		}
 	}
+
 	Context 'with dependencies' {
 		BeforeAll {
 			$package = 'keepass-plugin-winhello'
@@ -139,24 +54,25 @@ Describe 'pipeline-based package installation and uninstallation' {
 			Get-Package -Name $package | Uninstall-Package -Provider Chocolatey -RemoveDependencies -PassThru | Should -HaveCount 3
 		}
 	}
-	# Context 'with additional parameters' {
-	# 	BeforeAll {
-	# 		$package = 'sysinternals'
-	# 		$installDir = Join-Path -Path $env:ProgramFiles -ChildPath $package
-	# 		$params = "--paramsglobal --params ""/InstallDir:$installDir /QuickLaunchShortcut:false"""
-	# 		Remove-Item -Force -Recurse -Path $installDir -ErrorAction SilentlyContinue
-	# 	}
 
-	# 	It 'searches for and silently installs the latest version of a package' {
-	# 		Find-Package -Name $package | Install-Package -AdditionalArguments $params | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-	# 	}
-	# 	It 'correctly passed parameters to the package' {
-	# 		Get-ChildItem -Path $installDir -ErrorAction SilentlyContinue | Should -Not -BeNullOrEmpty
-	# 	}
-	# 	It 'finds and silently uninstalls the locally installed package just installed' {
-	# 		Get-Package -Name $package | Uninstall-Package -AdditionalArguments $params | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
-	# 	}
-	# }
+	Context 'with package parameters' {
+		BeforeAll {
+			$package = 'sysinternals'
+			$installDir = Join-Path -Path $env:ProgramFiles -ChildPath $package
+			$parameters = "/InstallDir:$installDir /QuickLaunchShortcut:false"
+			Remove-Item -Force -Recurse -Path $installDir -ErrorAction SilentlyContinue
+		}
+
+		It 'silently installs the latest version of a package with explicit parameters' {
+			Install-Package -Name $package -ParamsGlobal -Parameters $parameters | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+		}
+		It 'correctly passed parameters to the package' {
+			Get-ChildItem -Path $installDir -ErrorAction SilentlyContinue | Should -Not -BeNullOrEmpty
+		}
+		It 'silently uninstalls the locally installed package just installed' {
+			Uninstall-Package -Name $package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+		}
+	}
 }
 
 Describe 'multi-source support' {
@@ -226,19 +142,6 @@ Describe 'version filters' {
 			Get-Package -Name $package -Version $([NuGet.Versioning.VersionRange]"[,$version]") | UnInstall-Package -PassThru | Where-Object {$_.Name -contains $package -And $_.Version -le $version} | Should -Not -BeNullOrEmpty
 		}
 	}
-
-	# Context '"latest" version' {
-	# 	It 'does not find the "latest" locally installed version if an outdated version is installed' {
-	# 		Install-Package -Name $package -Version "[$version]" -Force
-	# 		Get-Package -Name $package -RequiredVersion 'latest' -ErrorAction SilentlyContinue | Where-Object {$_.Name -contains $package} | Should -BeNullOrEmpty
-	# 	}
-	# 	It 'searches for and silently installs the latest package version' {
-	# 		Find-Package -Name $package -RequiredVersion 'latest' | Install-Package -PassThru | Where-Object {$_.Name -contains $package -And $_.Version -gt $version} | Should -Not -BeNullOrEmpty
-	# 	}
-	# 	It 'finds and silently uninstalls a specific package version' {
-	# 		Get-Package -Name $package -RequiredVersion 'latest' | UnInstall-Package -PassThru | Where-Object {$_.Name -contains $package -And $_.Version -gt $version} | Should -Not -BeNullOrEmpty
-	# 	}
-	# }
 }
 
 Describe "error handling on Chocolatey failures" {
@@ -256,6 +159,7 @@ Describe "error handling on Chocolatey failures" {
 			{Install-Package -Name $package -Version "[$version]" -ErrorAction Stop -WarningAction SilentlyContinue} | Should -Throw
 		}
 	}
+
 	Context 'package uninstallation' {
 		BeforeAll {
 			$package = 'chromium'
