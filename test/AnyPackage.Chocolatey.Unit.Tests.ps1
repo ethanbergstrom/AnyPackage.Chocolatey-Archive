@@ -64,13 +64,13 @@ Describe 'pipeline-based package installation and uninstallation' {
 		}
 
 		It 'silently installs the latest version of a package with explicit parameters' {
-			Install-Package -Name $package -ParamsGlobal -Parameters $parameters | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+			Find-Package -Name $package | Install-Package -Provider Chocolatey -ParamsGlobal -Parameters $parameters | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 		}
 		It 'correctly passed parameters to the package' {
 			Get-ChildItem -Path $installDir -ErrorAction SilentlyContinue | Should -Not -BeNullOrEmpty
 		}
 		It 'silently uninstalls the locally installed package just installed' {
-			Uninstall-Package -Name $package -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
+			Get-Package -Name $package | Uninstall-Package -Provider Chocolatey -PassThru | Where-Object {$_.Name -contains $package} | Should -Not -BeNullOrEmpty
 		}
 	}
 }
