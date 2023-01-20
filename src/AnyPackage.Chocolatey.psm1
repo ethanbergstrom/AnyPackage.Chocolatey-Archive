@@ -10,7 +10,7 @@ Get-ChildItem $ScriptPath/private -Recurse -Filter '*.ps1' -File | ForEach-Objec
 }
 class UninstallPackageDynamicParameters {
 	[Parameter()]
-	[bool]
+	[switch]
 	$RemoveDependencies = $false
 }
 
