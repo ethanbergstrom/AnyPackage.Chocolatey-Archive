@@ -8,6 +8,7 @@ using namespace AnyPackage.Provider
 Get-ChildItem $ScriptPath/private -Recurse -Filter '*.ps1' -File | ForEach-Object {
 	. $_.FullName
 }
+
 class UninstallPackageDynamicParameters {
 	[Parameter()]
 	[switch]
