@@ -4,7 +4,7 @@
 	GUID = '070f2b8f-c7db-4566-9296-2f7cc9146bf0'
 	Author = 'Ethan Bergstrom'
 	Copyright = ''
-	Description = 'Package Management (AnyPackage) provider that facilitates installing Chocolatey packages from any NuGet repository.'
+	Description = 'AnyPackage provider that facilitates installing Chocolatey packages from any NuGet repository.'
 	PowerShellVersion = '5.1'
 	RequiredModules = @(
 		@{

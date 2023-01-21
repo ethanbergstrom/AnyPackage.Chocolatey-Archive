@@ -22,25 +22,25 @@ Find-Package -Name firefox*
 
 ### Install a package
 ```PowerShell
-Find-Package nodejs -Verbose | Install-Package
+Find-Package nodejs | Install-Package
 
-Install-Package -Name 7zip -Verbose
+Install-Package -Name 7zip
 ```
 
 ### Get list of installed packages
 ```PowerShell
-Get-Package nodejs -Verbose
+Get-Package nodejs
 ```
 
 ### Uninstall a package
 ```PowerShell
-Get-Package keepass-plugin-winhello -Verbose | Uninstall-Package -Verbose
+Get-Package keepass-plugin-winhello | Uninstall-Package
 ```
 
 ### Manage package sources
 ```PowerShell
 Register-PackageSource privateRepo -Location 'https://somewhere/out/there/api/v2/'
-Find-Package nodejs -Verbose -Source privateRepo | Install-Package
+Find-Package nodejs -Source privateRepo | Install-Package
 Unregister-PackageSource privateRepo
 ```
 AnyPackage.Chocolatey integrates with Choco.exe to manage and store source information
