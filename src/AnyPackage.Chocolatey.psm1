@@ -9,6 +9,16 @@ Get-ChildItem $ScriptPath/private -Recurse -Filter '*.ps1' -File | ForEach-Objec
 	. $_.FullName
 }
 
+class InstallPackageDynamicParameters {
+	[Parameter()]
+	[switch]
+	$ParamsGlobal = $false
+
+	[Parameter()]
+	[string]
+	$Parameters
+}
+
 class UninstallPackageDynamicParameters {
 	[Parameter()]
 	[switch]
@@ -21,6 +31,7 @@ class ChocolateyProvider : PackageProvider, IGetSource, ISetSource, IGetPackage,
 
 	[object] GetDynamicParameters([string] $commandName) {
 		return $(switch ($commandName) {
+			'Install-Package' {[InstallPackageDynamicParameters]::new()}
 			'Uninstall-Package' {[UninstallPackageDynamicParameters]::new()}
 			Default {$null}
 		})
@@ -57,8 +68,13 @@ class ChocolateyProvider : PackageProvider, IGetSource, ISetSource, IGetPackage,
 	}
 
 	[void] InstallPackage([PackageRequest] $Request) {
+		$chocoParams = @{
+			ParamsGlobal = $Request.DynamicParameters.ParamsGlobal
+			Parameters = $Request.DynamicParameters.Parameters
+		}
+
 		# Run the package request first through Find-ChocoPackage to determine which source to use, and filter by any version requirements
-		Find-ChocoPackage | Foil\Install-ChocoPackage | Write-Package
+		Find-ChocoPackage | Foil\Install-ChocoPackage @chocoParams | Write-Package
 	}
 
 	[void] UninstallPackage([PackageRequest] $Request) {
